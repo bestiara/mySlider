@@ -1,0 +1,70 @@
+body {
+    font-family: Verdana,sans-serif;
+    color: #fff;
+}
+h1 {
+    text-align: center;
+}
+.slider{
+    width: 400px;
+    height: 175px;
+    overflow: hidden;
+    position: relative;
+}
+.slidewrapper{
+    position: absolute;
+    left: 0;
+    top: 0;
+    height: 175px;
+    margin: 0;
+    padding: 0;
+    width: inherit;
+}
+.slide{
+    width: 400px;
+    height: 175px;
+    float: left;
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    width: inherit;
+}
+.first{
+    background: #79b1df;
+}
+.second{
+    background: #79b1df;
+}
+.third{
+    background: #79b1df;
+}
+.arrow {
+    width: 50px;
+    height: 100%;
+    position: absolute;
+}
+.arrow.next {
+    right: 0;
+    background: url(next.png) left center no-repeat;
+}
+.arrow.prev {
+    left: 0;
+    background: url(prev.png) left center no-repeat;
+}
+.slider-controls {
+    position: absolute;
+    bottom: 0;
+    left: 50%;
+    margin-left: -24px;
+}
+.slider-controls .control-slide {
+    display: inline-block;
+    width: 12px;
+    height: 12px;
+    overflow: hidden;
+    text-indent: -9999px;
+    background: url(radiobtn.png) center bottom no-repeat;
+}
+.slider-controls .control-slide.active {
+    background: url(radiobtn-a.png) center bottom no-repeat;
+}
