@@ -45,11 +45,11 @@ h1 {
 }
 .arrow.next {
     right: 0;
-    background: url(next.png) left center no-repeat;
+    background: url(../img/next.png) left center no-repeat;
 }
 .arrow.prev {
     left: 0;
-    background: url(prev.png) left center no-repeat;
+    background: url(../img/prev.png) left center no-repeat;
 }
 .slider-controls {
     position: absolute;
@@ -63,8 +63,8 @@ h1 {
     height: 12px;
     overflow: hidden;
     text-indent: -9999px;
-    background: url(radiobtn.png) center bottom no-repeat;
+    background: url(../img/radiobtn.png) center bottom no-repeat;
 }
 .slider-controls .control-slide.active {
-    background: url(radiobtn-a.png) center bottom no-repeat;
+    background: url(../img/radiobtn-a.png) center bottom no-repeat;
 }
