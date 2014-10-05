@@ -5,23 +5,27 @@ body {
 h1 {
     text-align: center;
 }
-.slider{
-    width: 400px;
-    height: 175px;
-    overflow: hidden;
-    position: relative;
-}
-.slidewrapper{
+
+.main {
+    width: 650px;
+    height: 400px;
     position: absolute;
+}
+.main2 {
+    width: 400px;
+    height: 400px;
+    position: absolute;
+    margin-left: 700px;
+}
+
+.slidewrapper{
+    position: relative;
     left: 0;
     top: 0;
-    height: 175px;
     margin: 0;
     padding: 0;
 }
 .slide{
-    width: 400px;
-    height: 175px;
     float: left;
     list-style: none;
     margin: 0;
@@ -65,4 +69,26 @@ h1 {
 }
 .slider-controls .control-slide.active {
     background: url(../img/radiobtn-a.png) center bottom no-repeat;
+}
+
+.thumbnail {
+    position: relative;
+
+}
+.thumbnail-container {
+    position: absolute;
+    left: 0;
+    top: 0;
+    margin: 0;
+    padding: 0;
+}
+.thumbnail-container .thumb {
+    margin: 5px 5px 0 0;
+    width: 100%;
+    float: left;
+    list-style: none;
+    background-color: #79b1df;
+}
+.thumbnail-container .thumb.active{
+    opacity: 0.6;
 }

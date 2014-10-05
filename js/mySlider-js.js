@@ -3,59 +3,181 @@
  * Date: 02.10.14
  * Time: 11:52
  */
-var slideWidth=$('.slider').width();
-var sliderTimer;
-$(function(){
-    $('.slidewrapper').width($('.slidewrapper').children().size()*slideWidth);
-    //sliderTimer=setInterval(nextSlide,1000);
-    $('.slider').hover(function(){
-        clearInterval(sliderTimer);
-    },function(){
-        //sliderTimer=setInterval(nextSlide,1000);
-    });
-    $('.next').click(function(){
-        //clearInterval(sliderTimer);
-        nextSlide();
-        //sliderTimer=setInterval(nextSlide,1000);
-    });
-    $('.prev').click(function(){
-        //clearInterval(sliderTimer);
-        prevSlide();
-        //sliderTimer=setInterval(nextSlide,1000);
-    });
-    $('.control-slide').click(function(){
-        setSlide(this);
-    });
-});
+(function($) {
+    $.fn.slider = function( options ) {
 
+        var settings = $.extend( {
+            'autoslide' : 'false',
+            'speed' : '1000',
+            'arrows' : 'true',
+            'controls' : 'true',
+            'thumbnail' : 'true',
+            'thumbPos' : 'bottom'
+        }, options);
 
-function nextSlide(){
-    var currentSlide=parseInt($('.slidewrapper').data('current'));
-    $('.control-slide').removeClass('active');
-    currentSlide++;
-    if(currentSlide>=$('.slidewrapper').children().size())
-    {
-        currentSlide=0;
+        this.each(function() {
+            var $this = $(this),
+                $slideWrapper = $this.find('.slidewrapper'),
+                $controlSlide = $this.find('.control-slide'),
+                $thumbnails = $this.parent().find('.thumb'),
+                slideCount = $slideWrapper.children().size(),
+                slideWidth = $this.parent().width(),
+                slideHeight = $this.parent().height(),
+                sliderTimer;
+
+            $slideWrapper.width(slideCount * slideWidth);
+            $this.css({
+                overflow : 'hidden',
+                position : 'relative'
+            });
+            setSlider();
+            startAutoSlide();
+            $this.hover(function() {
+                clearInterval(sliderTimer);
+            }, function() {
+                startAutoSlide()
+            });
+
+            $this.find('.next').click(function(event) {
+                event.preventDefault();
+                nextSlide();
+            });
+
+            $this.find('.prev').click(function(event) {
+                event.preventDefault();
+                prevSlide();
+
+            });
+
+            $controlSlide.click(function(event) {
+                event.preventDefault();
+                setSlide($(this));
+            });
+
+            $thumbnails.click(function(event) {
+                event.preventDefault();
+                setSlide($(this));
+            });
+
+            function startAutoSlide(){
+                if (settings.autoslide == 'true') {
+                    sliderTimer=setInterval(nextSlide, settings.speed);
+                }
+            }
+            function nextSlide() {
+                var currentSlide = parseInt($slideWrapper.data('current'));
+                currentSlide++;
+                if (currentSlide == slideCount) {
+                    currentSlide = 0;
+                }
+
+                $slideWrapper.animate({
+                        left: -currentSlide * slideWidth
+                    }, 500)
+                    .data('current', currentSlide);
+
+                changeControlSlide(currentSlide);
+            }
+
+            function prevSlide() {
+                var currentSlide = parseInt($slideWrapper.data('current'));
+                currentSlide--;
+
+                if (currentSlide < 0) {
+                    currentSlide = slideCount - 1;
+                }
+
+                $slideWrapper.animate({
+                        left: -currentSlide * slideWidth
+                    }, 500)
+                    .data('current', currentSlide);
+
+                changeControlSlide(currentSlide);
+            }
+
+            function setSlide(slide) {
+                var statedSlide = slide.index();
+                changeControlSlide(statedSlide);
+
+                $slideWrapper.animate({
+                        left: -(statedSlide) * slideWidth
+                    }, 500)
+                    .data('current', statedSlide);
+            }
+            
+            function changeControlSlide(index) {
+                $this.find('.control-slide.active').removeClass('active');
+                $this.find('.control-slide:eq(' + index + ')').addClass('active');
+                $this.parent().find('.thumb.active').removeClass('active');
+                $this.parent().find('.thumb:eq(' + index + ')').addClass('active');
+            }
+
+            function setSlider() {
+                var thumbnail = $this.parent().find('.thumbnail');
+                var thumb =thumbnail.find('.thumb');
+                if (settings.arrows == 'false'){
+                    $this.find('.arrow').css('visibility', 'hidden');
+                }
+                if (settings.arrows == 'false'){
+                    $this.find('.control-slide').css('visibility', 'hidden');
+                }
+                if (settings.thumbnail == 'false') {
+                    $this.height(slideHeight);
+                    $this.find('.slide').height(slideHeight);
+                    $this.find('.slide').width(slideWidth);
+                }
+                if (settings.thumbnail == 'true') {
+
+                    thumbnail.css("visibility", "visible");
+
+                    if (settings.thumbPos == 'bottom'){
+                        $this.height(slideHeight - slideHeight/5);
+                        $this.find('.slide').height(slideHeight - slideHeight/5);
+                        $this.find('.slide').width(slideWidth);
+                        thumb.width($this.find('.slide').width()/5);
+                        thumb.height($this.find('.slide').height()/5);
+                    }
+
+                    if (settings.thumbPos == 'top') {
+                        $this.height(slideHeight - slideHeight/5);
+                        $this.find('.slide').height(slideHeight - slideHeight/5);
+                        $this.find('.slide').width(slideWidth);
+                        thumb.width($this.find('.slide').width()/5);
+                        thumb.height($this.find('.slide').height()/5);
+                        thumb.css('margin', '0 5px 5px 0');
+                        $this.css("padding-top", $this.find('.slide').height()/5+5+'px');
+                        thumbnail.clone().insertBefore($this);
+                        thumbnail.remove();
+                    }
+                    if (settings.thumbPos == 'left') {
+                        slideWidth = slideWidth - slideWidth/5;
+                        $this.width(slideWidth);
+                        $this.find('.slide').width(slideWidth);
+                        $this.find('.slide').height(slideHeight);
+                        thumb.width($this.find('.slide').width()/5);
+                        thumb.height($this.find('.slide').height()/5);
+                        $this.css("margin-left", $this.width()/5+5+'px');
+                        thumb.css('margin', '0 5px  5px  0 ');
+                        thumb.css('float', 'none');
+                        thumbnail.clone().insertBefore($this);
+                        thumbnail.remove();
+                    }
+
+                    if (settings.thumbPos == 'right') {
+                        slideWidth = slideWidth - slideWidth/5;
+                        $this.width(slideWidth);
+                        $this.find('.slide').width(slideWidth);
+                        $this.find('.slide').height(slideHeight);
+                        thumb.width($this.find('.slide').width()/5);
+                        thumb.height($this.find('.slide').height()/5);
+                        thumbnail.css('margin-left', slideWidth);
+                        thumb.css('margin', '0 0 5px 5px');
+                        thumb.css('float', 'none');
+                        $this.css('float', 'left');
+                        $this.width(slideWidth);
+                    }
+                }
+            }
+        });
     }
-    $('.slidewrapper').animate({left: -currentSlide*slideWidth},500).data('current',currentSlide);
-    $('#'+currentSlide).addClass('active');
-}
-
-function prevSlide(){
-    var currentSlide=parseInt($('.slidewrapper').data('current'));
-    $('.control-slide').removeClass('active');
-    currentSlide--;
-    if(currentSlide<0)
-    {
-        currentSlide=$('.slidewrapper').children().size()-1;
-    }
-    $('.slidewrapper').animate({left: -currentSlide*slideWidth},500).data('current',currentSlide);
-    $('#'+currentSlide).addClass('active');
-}
-
-function setSlide(_this){
-    var statedSlide=_this.id;
-    $('.control-slide').removeClass('active');
-    $('#'+statedSlide).addClass('active');
-    $('.slidewrapper').animate({left: -(statedSlide)*slideWidth},500).data('current',statedSlide);
-}
+})(jQuery);
