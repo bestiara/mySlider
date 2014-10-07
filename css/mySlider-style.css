@@ -1,23 +1,54 @@
 body {
     font-family: Verdana,sans-serif;
-    color: #fff;
+    margin: 0;
+    padding: 0;
 }
 h1 {
     text-align: center;
 }
-
+.container {
+    width: 1000px;
+    margin: 50px auto;
+}
 .main {
-    width: 650px;
-    height: 400px;
+    width: 500px;
+    height: 250px;
     position: absolute;
 }
-.main2 {
-    width: 400px;
-    height: 400px;
+.main_right {
+    width: 500px;
+    height: 250px;
     position: absolute;
-    margin-left: 700px;
+    margin-left: 600px;
+}
+.main_bottom {
+    width: 500px;
+    height: 250px;
+    position: absolute;
+    margin-top: 300px;
+}
+.main_left {
+    width: 500px;
+    height: 250px;
+    position: absolute;
+    margin-top: 300px;
+    margin-left: 600px;
+}
+.main_top {
+    width: 500px;
+    height: 250px;
+    position: absolute;
+    margin-top: 600px;
+
 }
 
+.main_right_link{
+    width: 500px;
+    height: 250px;
+    position: absolute;
+    margin-top: 600px;
+    margin-left: 600px;
+}
 .slidewrapper{
     position: relative;
     left: 0;
@@ -28,9 +59,14 @@ h1 {
 .slide{
     float: left;
     list-style: none;
+    overflow: hidden;
     margin: 0;
     padding: 0;
 }
+
+.slide img{
+}
+
 .first{
     background: #79b1df;
 }
@@ -91,4 +127,10 @@ h1 {
 }
 .thumbnail-container .thumb.active{
     opacity: 0.6;
+}
+
+.thumbnail-container .thumb a{
+    color: #547b9c;
+    text-decoration: none;
+    position: absolute;
 }
