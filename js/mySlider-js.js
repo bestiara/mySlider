@@ -49,7 +49,7 @@
             $thumbnail.width(slideWidth);
             $thumbnail.height(slideHeight / 5);
             $thumbContainer.attr('data-current', 0);
-            $slideWrapper.width(slideCount * slideWidth);
+
             $this.css({
                 overflow: 'hidden',
                 position: 'relative'
@@ -69,11 +69,11 @@
                         $clone = $controlSlide.clone();
                         $clone.click(function (event) {
                             event.preventDefault();
-                            if (settings.thumbnail){
-                                if ((settings.thumbPos == 'top')||(settings.thumbPos == 'bottom')){
-                                    setSlide($(this),'horizontal');
-                                }else if ((settings.thumbPos == 'left')||(settings.thumbPos == 'right')){
-                                    setSlide($(this),'vertical');
+                            if (settings.thumbnail) {
+                                if ((settings.thumbPos == 'top') || (settings.thumbPos == 'bottom')) {
+                                    setSlide($(this), 'horizontal');
+                                } else if ((settings.thumbPos == 'left') || (settings.thumbPos == 'right')) {
+                                    setSlide($(this), 'vertical');
                                 }
                             }
                         });
@@ -122,7 +122,7 @@
                             $this.width(slideWidth - slideHeight / 5);
                             $this.height(slideHeight);
 
-                            $slide.width(slideWidth  - slideHeight / 5);
+                            $slide.width(slideWidth - slideHeight / 5);
                             $slide.height(slideHeight);
 
                             $thumb.width(slideHeight / 5);
@@ -136,7 +136,7 @@
 
                             thumbsPerSlide = $slide.height() / $thumb.height();
 
-                            $this.css("margin-left",  $thumb.width() + 'px');
+                            $this.css("margin-left", $thumb.width() + 'px');
                             $this.css('float', 'left');
 
                             $thumb.css('float', 'none');
@@ -157,8 +157,8 @@
                             $this.css("margin-top", $thumb.height());
 
                             $thumbnail.css({
-                                position : 'absolute',
-                                top : 0
+                                position: 'absolute',
+                                top: 0
                             });
 
                             break;
@@ -170,7 +170,7 @@
                                 $this.width(slideWidth - 3 * slideHeight / 5);
                                 $this.height(slideHeight);
 
-                                $slide.width(slideWidth  - 3 * slideHeight / 5);
+                                $slide.width(slideWidth - 3 * slideHeight / 5);
                                 $slide.height(slideHeight);
 
                                 $thumb.width(slideHeight / 5);
@@ -193,7 +193,7 @@
                                 $this.width(slideWidth - slideHeight / 5);
                                 $this.height(slideHeight);
 
-                                $slide.width(slideWidth  -  slideHeight / 5);
+                                $slide.width(slideWidth - slideHeight / 5);
                                 $slide.height(slideHeight);
 
                                 $thumb.width(slideHeight / 5);
@@ -208,13 +208,13 @@
                                 thumbsPerSlide = $slide.height() / $thumb.height();
 
                                 $thumbnail.css('margin-left', slideWidth - $thumb.width());
-                                $this.css("margin-right",  $thumb.width() + 'px');
+
+                                $this.css("margin-right", $thumb.width() + 'px');
 
                                 $thumb.css('float', 'none');
 
                                 $this.css('float', 'left');
                             }
-
 
 
                             break;
@@ -249,11 +249,11 @@
                     $clone = $thumb.clone();
                     $clone.click(function (event) {
                         event.preventDefault();
-                        if (settings.thumbnail){
-                            if ((settings.thumbPos == 'top')||(settings.thumbPos == 'bottom')){
-                                setSlide($(this),'horizontal');
-                            }else if ((settings.thumbPos == 'left')||(settings.thumbPos == 'right')){
-                                setSlide($(this),'vertical');
+                        if (settings.thumbnail) {
+                            if ((settings.thumbPos == 'top') || (settings.thumbPos == 'bottom')) {
+                                setSlide($(this), 'horizontal');
+                            } else if ((settings.thumbPos == 'left') || (settings.thumbPos == 'right')) {
+                                setSlide($(this), 'vertical');
                             }
                         }
                     });
@@ -272,14 +272,15 @@
                     $this.parent().append($thumbnail);
 
                 });
-                if (settings.thumbnail){
-                    if ((settings.thumbPos == 'top')||(settings.thumbPos == 'bottom')){
+                if (settings.thumbnail) {
+                    if ((settings.thumbPos == 'top') || (settings.thumbPos == 'bottom')) {
                         $thumbnail.append('<div class="arrow_thumb prev"></div><div class="arrow_thumb next"></div>');
-                    }else if ((settings.thumbPos == 'left')||(settings.thumbPos == 'right')){
+                    } else if ((settings.thumbPos == 'left') || (settings.thumbPos == 'right')) {
                         $thumbnail.append('<div class="arrow_thumb_vert prev"></div><div class="arrow_thumb_vert next"></div>');
                     }
                 }
 
+                $slideWrapper.width(slideCount * $slide.width());
 
             }
 
@@ -337,17 +338,31 @@
                 if (currentSlide == slideCount) {
                     currentSlide = 0;
                 }
+                if ((settings.thumbPos == 'top') || (settings.thumbPos == 'bottom')) {
+                    var direction = 'horizontal';
+                } else if ((settings.thumbPos == 'left') || (settings.thumbPos == 'right')) {
+                    var direction = 'vertical';
+                }
 
-                $thumbContainer.animate({
-                    top: -(parseInt(currentSlide / thumbsPerSlide)) * slideWidth
-                }, 500)
-                    .data('current', parseInt(currentSlide / thumbsPerSlide));
-
-                $slideWrapper.animate({
-                    left: -currentSlide * slideWidth
-                }, 500)
-                    .data('current', currentSlide);
-
+                if (direction == 'horizontal') {
+                    $thumbContainer.animate({
+                        left: -(parseInt(currentSlide / thumbsPerSlide)) * $slide.width()
+                    }, 500)
+                        .data('current', parseInt(currentSlide / thumbsPerSlide));
+                    $slideWrapper.animate({
+                        left: -currentSlide * $slide.width()
+                    }, 500)
+                        .data('current', currentSlide);
+                } else {
+                    $thumbContainer.animate({
+                        top: -(parseInt(currentSlide / thumbsPerSlide)) * $slide.height()
+                    }, 500)
+                        .data('current', parseInt(currentSlide / thumbsPerSlide));
+                    $slideWrapper.animate({
+                        left: -currentSlide * $slide.width()
+                    }, 500)
+                        .data('current', currentSlide);
+                }
                 changeControlSlide(currentSlide);
             }
 
@@ -359,16 +374,31 @@
                 if (currentSlide < 0) {
                     currentSlide = slideCount - 1;
                 }
-                $thumbContainer.animate({
-                    left: -parseInt(currentSlide / thumbsPerSlide) * slideWidth
-                }, 500)
-                    .data('current', parseInt(currentSlide / thumbsPerSlide));
+                if ((settings.thumbPos == 'top') || (settings.thumbPos == 'bottom')) {
+                    var direction = 'horizontal';
+                } else if ((settings.thumbPos == 'left') || (settings.thumbPos == 'right')) {
+                    var direction = 'vertical';
+                }
 
-                $slideWrapper.animate({
-                    left: -currentSlide * slideWidth
-                }, 500)
-                    .data('current', currentSlide);
-
+                if (direction == 'horizontal') {
+                    $thumbContainer.animate({
+                        left: -(parseInt(currentSlide / thumbsPerSlide)) * $slide.width()
+                    }, 500)
+                        .data('current', parseInt(currentSlide / thumbsPerSlide));
+                    $slideWrapper.animate({
+                        left: -currentSlide * $slide.width()
+                    }, 500)
+                        .data('current', currentSlide);
+                } else {
+                    $thumbContainer.animate({
+                        top: -(parseInt(currentSlide / thumbsPerSlide)) * $slide.height()
+                    }, 500)
+                        .data('current', parseInt(currentSlide / thumbsPerSlide));
+                    $slideWrapper.animate({
+                        left: -currentSlide * $slide.width()
+                    }, 500)
+                        .data('current', currentSlide);
+                }
                 changeControlSlide(currentSlide);
             }
 
@@ -376,7 +406,7 @@
                 var statedSlide = slide.index();
                 setThumbs(slide, direction);
                 $slideWrapper.animate({
-                    left: -(statedSlide) * slideWidth
+                    left: -(statedSlide) * $slide.width()
                 }, 500)
                     .data('current', statedSlide);
 
@@ -392,19 +422,24 @@
             }
 
             function nextThumbs(direction) {
+
                 var currentSlide = parseInt($thumbContainer.data('current'));
                 currentSlide++;
+
                 if (currentSlide == parseInt(slideCount / thumbsPerSlide) + 1) {
                     currentSlide = 0;
                 }
-                if(direction == 'vertical'){
+                if (direction == 'vertical') {
+
                     $thumbContainer.animate({
-                        top: -currentSlide * slideHeight
+                        top: -currentSlide * $slide.height()
                     }, 500)
                         .data('current', currentSlide);
-                }else{
+                } else {
+
                     $thumbContainer.animate({
-                        left: -currentSlide * slideWidth
+
+                        left: -currentSlide * $slide.width()
                     }, 500)
                         .data('current', currentSlide);
                 }
@@ -412,36 +447,39 @@
             }
 
             function prevThumbs(direction) {
+
                 var currentSlide = parseInt($thumbContainer.data('current'));
                 currentSlide--;
 
                 if (currentSlide < 0) {
                     currentSlide = parseInt(slideCount / thumbsPerSlide);
                 }
-                if(direction == 'vertical'){
+                if (direction == 'vertical') {
                     $thumbContainer.animate({
-                        top: -currentSlide * slideHeight
+                        top: -currentSlide * $slide.height()
                     }, 500)
                         .data('current', currentSlide);
-                }else{
+                } else {
                     $thumbContainer.animate({
-                        left: -currentSlide * slideWidth
+                        left: -currentSlide * $slide.width()
                     }, 500)
                         .data('current', currentSlide);
                 }
             }
+
             function setThumbs(slide, direction) {
+
                 var statedSlide = parseInt(slide.index() / thumbsPerSlide);
 
-                if(direction == 'vertical'){
+                if (direction == 'vertical') {
                     $thumbContainer.animate({
-                        top: -statedSlide * slideHeight
+                        top: -statedSlide * $slide.height()
                     }, 500)
                         .data('current', statedSlide);
 
-                }else{
+                } else {
                     $thumbContainer.animate({
-                        left: -statedSlide * slideWidth
+                        left: -statedSlide * $slide.width()
                     }, 500)
                         .data('current', statedSlide);
 
