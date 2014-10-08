@@ -21,19 +21,23 @@
                 $slideWrapper = $this.find('.slidewrapper'), //контейнер с слайдами
                 $slide = $this.find('.slide'), //контейнер слайда
                 slideCount = $slideWrapper.children().size(), //количество слайдов
+                thumbsPerSlide,
                 slideWidth = $this.parent().width(), //ширина родителя слайдера
                 slideHeight = $this.parent().height(), //высота родителя слайдера
                 $sliderControls = $('<div/>', {
                     class: 'slider-controls'
                 }),
                 $controlSlide = $('<span/>', {
-                    class: 'control-slide'
+                    class: 'control-slide',
+                    style: 'width: 12px; height: 12px;'
                 }),
                 $thumbnail = $('<div/>', {
-                    class: 'thumbnail'
+                    class: 'thumbnail',
+                    style: 'overflow: hidden; position: absolute;'
                 }),
                 $thumbContainer = $('<ul/>', {
-                    class: 'thumbnail-container'
+                    class: 'thumbnail-container',
+                    width: slideCount * slideWidth
                 }),
                 $thumb = $('<li/>', {
                     class: 'thumb',
@@ -42,7 +46,9 @@
                 $link = $('<a/>', {
                 }),
                 sliderTimer;
-
+            $thumbnail.width(slideWidth);
+            $thumbnail.height(slideHeight / 5);
+            $thumbContainer.attr('data-current', 0);
             $slideWrapper.width(slideCount * slideWidth);
             $this.css({
                 overflow: 'hidden',
@@ -56,19 +62,29 @@
                 if (settings.arrows) { //добавление стрелок
                     $this.append('<div class="arrow prev"></div><div class="arrow next"></div>');
                 }
+
                 if (settings.selector) { //создание шариков-селекторов
                     $controlSlide.addClass('active');
                     $slide.each(function () {
                         $clone = $controlSlide.clone();
                         $clone.click(function (event) {
                             event.preventDefault();
-                            setSlide($(this));
+                            if (settings.thumbnail){
+                                if ((settings.thumbPos == 'top')||(settings.thumbPos == 'bottom')){
+                                    setSlide($(this),'horizontal');
+                                }else if ((settings.thumbPos == 'left')||(settings.thumbPos == 'right')){
+                                    setSlide($(this),'vertical');
+                                }
+                            }
                         });
                         $sliderControls.append($clone);
+                        $sliderControls.css('margin-left', -$controlSlide.width() * slideCount / 2);
                         $controlSlide.removeClass('active');
                     });
+
                     $this.append($sliderControls);
                 }
+
                 if (!settings.thumbnail) {
 
                     $this.height(slideHeight);
@@ -85,52 +101,65 @@
 
                         case 'bottom':
 
-                            $this.height(slideHeight - slideHeight / slideCount);
+                            $this.height(slideHeight - slideHeight / 5);
                             $this.width(slideWidth);
 
-                            $slide.height(slideHeight - slideHeight / slideCount);
+                            $slide.height(slideHeight - slideHeight / 5);
                             $slide.width(slideWidth);
 
-                            $thumb.width($slide.width() / slideCount - 5);
-                            $thumb.height($slide.height() / slideCount);
+                            $thumb.width(slideHeight / 5);
+                            $thumb.height(slideHeight / 5);
+
+                            $thumbContainer.width($thumb.width() * slideCount);
+
+                            thumbsPerSlide = $slide.width() / $thumb.width();
 
                             break;
 
                         case 'left':
 
-                            slideWidth = slideWidth - slideWidth / slideCount;
 
-                            $this.width(slideWidth);
+                            $this.width(slideWidth - slideHeight / 5);
+                            $this.height(slideHeight);
 
-                            $slide.width(slideWidth);
+                            $slide.width(slideWidth  - slideHeight / 5);
                             $slide.height(slideHeight);
 
-                            $thumb.width($slide.width() / slideCount);
-                            $thumb.height($slide.height() / slideCount - 5);
+                            $thumb.width(slideHeight / 5);
+                            $thumb.height(slideHeight / 5);
 
-                            $this.css("margin-left", $this.width() / slideCount + 5 + 'px');
+                            $thumbnail.width($thumb.width());
+                            $thumbnail.height($slide.height());
+
+                            $thumbContainer.width($thumb.width());
+                            $thumbContainer.height($thumb.height() * slideCount);
+
+                            thumbsPerSlide = $slide.height() / $thumb.height();
+
+                            $this.css("margin-left",  $thumb.width() + 'px');
                             $this.css('float', 'left');
 
-                            $thumb.css('margin', '0 5px  5px  0 ');
                             $thumb.css('float', 'none');
 
                             break;
 
                         case 'top':
 
-                            $this.height(slideHeight - slideHeight / slideCount);
+                            $this.height(slideHeight - slideHeight / 5);
                             $this.width(slideWidth);
 
-                            $slide.height(slideHeight - slideHeight / slideCount);
+                            $slide.height(slideHeight - slideHeight / 5);
                             $slide.width(slideWidth);
 
-                            $thumb.width($slide.width() / slideCount - 5);
-                            $thumb.height($slide.height() / slideCount);
-                            $thumb.css('margin', '0 5px 5px 0');
+                            $thumb.width(slideHeight / 5);
+                            $thumb.height(slideHeight / 5);
 
-                            $this.css("margin-top", $slide.height() / slideCount + 5 + 'px');
+                            $this.css("margin-top", $thumb.height());
 
-                            $thumbnail.css('position', 'static');
+                            $thumbnail.css({
+                                position : 'absolute',
+                                top : 0
+                            });
 
                             break;
 
@@ -138,42 +167,55 @@
 
                             if (settings.links == true) {
 
-                                slideWidth = slideWidth - slideWidth / (slideCount + 2);
+                                $this.width(slideWidth - 3 * slideHeight / 5);
+                                $this.height(slideHeight);
 
-                                $this.width(slideWidth);
-
-                                $slide.width(slideWidth);
+                                $slide.width(slideWidth  - 3 * slideHeight / 5);
                                 $slide.height(slideHeight);
 
-                                $thumb.width($slide.width() / slideCount);
-                                $thumb.height($slide.height() / slideCount - 5);
+                                $thumb.width(slideHeight / 5);
+                                $thumb.height(slideHeight / 5);
 
-                                $thumbnail.css('margin-left', slideWidth);
+                                $thumbnail.width(3 * $thumb.width());
+                                $thumbnail.height($slide.height());
 
-                                $thumb.css('margin', '0 0 5px 5px');
+                                $thumbContainer.width($thumb.width());
+                                $thumbContainer.height($thumb.height() * slideCount);
+
+                                $thumbnail.css('margin-left', slideWidth - 3 * $thumb.width());
+
                                 $thumb.css('float', 'none');
 
                                 $this.css('float', 'left');
-                                $this.width(slideWidth);
 
+                            } else {
+
+                                $this.width(slideWidth - slideHeight / 5);
+                                $this.height(slideHeight);
+
+                                $slide.width(slideWidth  -  slideHeight / 5);
+                                $slide.height(slideHeight);
+
+                                $thumb.width(slideHeight / 5);
+                                $thumb.height(slideHeight / 5);
+
+                                $thumbnail.width($thumb.width());
+                                $thumbnail.height($slide.height());
+
+                                $thumbContainer.width($thumb.width());
+                                $thumbContainer.height($thumb.height() * slideCount);
+
+                                thumbsPerSlide = $slide.height() / $thumb.height();
+
+                                $thumbnail.css('margin-left', slideWidth - $thumb.width());
+                                $this.css("margin-right",  $thumb.width() + 'px');
+
+                                $thumb.css('float', 'none');
+
+                                $this.css('float', 'left');
                             }
-                            slideWidth = slideWidth - slideWidth / slideCount;
 
-                            $this.width(slideWidth);
 
-                            $slide.width(slideWidth);
-                            $slide.height(slideHeight);
-
-                            $thumb.width($slide.width() / slideCount);
-                            $thumb.height($slide.height() / slideCount - 5);
-
-                            $thumbnail.css('margin-left', slideWidth);
-
-                            $thumb.css('margin', '0 0 5px 5px');
-                            $thumb.css('float', 'none');
-
-                            $this.css('float', 'left');
-                            $this.width(slideWidth);
 
                             break;
 
@@ -207,7 +249,13 @@
                     $clone = $thumb.clone();
                     $clone.click(function (event) {
                         event.preventDefault();
-                        setSlide($(this));
+                        if (settings.thumbnail){
+                            if ((settings.thumbPos == 'top')||(settings.thumbPos == 'bottom')){
+                                setSlide($(this),'horizontal');
+                            }else if ((settings.thumbPos == 'left')||(settings.thumbPos == 'right')){
+                                setSlide($(this),'vertical');
+                            }
+                        }
                     });
 
                     $thumbContainer.append($clone);
@@ -224,6 +272,14 @@
                     $this.parent().append($thumbnail);
 
                 });
+                if (settings.thumbnail){
+                    if ((settings.thumbPos == 'top')||(settings.thumbPos == 'bottom')){
+                        $thumbnail.append('<div class="arrow_thumb prev"></div><div class="arrow_thumb next"></div>');
+                    }else if ((settings.thumbPos == 'left')||(settings.thumbPos == 'right')){
+                        $thumbnail.append('<div class="arrow_thumb_vert prev"></div><div class="arrow_thumb_vert next"></div>');
+                    }
+                }
+
 
             }
 
@@ -241,7 +297,31 @@
             $this.find('.prev').click(function (event) {
                 event.preventDefault();
                 prevSlide();
+            });
 
+            $this.parent().find('.arrow_thumb.next').click(function (event) {
+                var direction = 'horizontal';
+                event.preventDefault();
+                nextThumbs(direction);
+            });
+
+            $this.parent().find('.arrow_thumb.prev').click(function (event) {
+                var direction = 'horizontal';
+                event.preventDefault();
+                prevThumbs(direction);
+            });
+
+
+            $this.parent().find('.arrow_thumb_vert.next').click(function (event) {
+                var direction = 'vertical';
+                event.preventDefault();
+                nextThumbs(direction);
+            });
+
+            $this.parent().find('.arrow_thumb_vert.prev').click(function (event) {
+                var direction = 'vertical';
+                event.preventDefault();
+                prevThumbs(direction);
             });
 
             function startAutoSlide() { //запускаем автоскролл, если он включен
@@ -251,11 +331,17 @@
             }
 
             function nextSlide() { //функция, переключающая следующий слайд
+
                 var currentSlide = parseInt($slideWrapper.data('current'));
                 currentSlide++;
                 if (currentSlide == slideCount) {
                     currentSlide = 0;
                 }
+
+                $thumbContainer.animate({
+                    top: -(parseInt(currentSlide / thumbsPerSlide)) * slideWidth
+                }, 500)
+                    .data('current', parseInt(currentSlide / thumbsPerSlide));
 
                 $slideWrapper.animate({
                     left: -currentSlide * slideWidth
@@ -266,12 +352,17 @@
             }
 
             function prevSlide() { //функция, переключающая предыдущий слайд
+
                 var currentSlide = parseInt($slideWrapper.data('current'));
                 currentSlide--;
 
                 if (currentSlide < 0) {
                     currentSlide = slideCount - 1;
                 }
+                $thumbContainer.animate({
+                    left: -parseInt(currentSlide / thumbsPerSlide) * slideWidth
+                }, 500)
+                    .data('current', parseInt(currentSlide / thumbsPerSlide));
 
                 $slideWrapper.animate({
                     left: -currentSlide * slideWidth
@@ -281,8 +372,9 @@
                 changeControlSlide(currentSlide);
             }
 
-            function setSlide(slide) { //функция, переключающая слайд по индексу
+            function setSlide(slide, direction) { //функция, переключающая слайд по индексу
                 var statedSlide = slide.index();
+                setThumbs(slide, direction);
                 $slideWrapper.animate({
                     left: -(statedSlide) * slideWidth
                 }, 500)
@@ -297,6 +389,63 @@
                 $this.find('.control-slide:eq(' + index + ')').addClass('active');
                 $this.parent().find('.thumb.active').removeClass('active');
                 $this.parent().find('.thumb:eq(' + index + ')').addClass('active');
+            }
+
+            function nextThumbs(direction) {
+                var currentSlide = parseInt($thumbContainer.data('current'));
+                currentSlide++;
+                if (currentSlide == parseInt(slideCount / thumbsPerSlide) + 1) {
+                    currentSlide = 0;
+                }
+                if(direction == 'vertical'){
+                    $thumbContainer.animate({
+                        top: -currentSlide * slideHeight
+                    }, 500)
+                        .data('current', currentSlide);
+                }else{
+                    $thumbContainer.animate({
+                        left: -currentSlide * slideWidth
+                    }, 500)
+                        .data('current', currentSlide);
+                }
+
+            }
+
+            function prevThumbs(direction) {
+                var currentSlide = parseInt($thumbContainer.data('current'));
+                currentSlide--;
+
+                if (currentSlide < 0) {
+                    currentSlide = parseInt(slideCount / thumbsPerSlide);
+                }
+                if(direction == 'vertical'){
+                    $thumbContainer.animate({
+                        top: -currentSlide * slideHeight
+                    }, 500)
+                        .data('current', currentSlide);
+                }else{
+                    $thumbContainer.animate({
+                        left: -currentSlide * slideWidth
+                    }, 500)
+                        .data('current', currentSlide);
+                }
+            }
+            function setThumbs(slide, direction) {
+                var statedSlide = parseInt(slide.index() / thumbsPerSlide);
+
+                if(direction == 'vertical'){
+                    $thumbContainer.animate({
+                        top: -statedSlide * slideHeight
+                    }, 500)
+                        .data('current', statedSlide);
+
+                }else{
+                    $thumbContainer.animate({
+                        left: -statedSlide * slideWidth
+                    }, 500)
+                        .data('current', statedSlide);
+
+                }
             }
         });
     }

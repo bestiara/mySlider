@@ -1,5 +1,6 @@
 body {
     font-family: Verdana,sans-serif;
+    height: 100%;
     margin: 0;
     padding: 0;
 }
@@ -7,8 +8,9 @@ h1 {
     text-align: center;
 }
 .container {
-    width: 1000px;
+    height: 100%;
     margin: 0 auto;
+    background-color: black;
 }
 .main {
     width: 500px;
@@ -22,10 +24,10 @@ h1 {
     margin-left: 600px;
 }
 .main_bottom {
-    width: 500px;
-    height: 250px;
+    width: 100%;
+    height: 100%;
     position: absolute;
-    margin-top: 300px;
+    /*margin-top: 300px;*/
 }
 .main_left {
     width: 500px;
@@ -85,20 +87,6 @@ h1 {
     width: 32px;
     height: 100%;
     position: absolute;
-}
-
-.arrow_thumb_vert {
-    width: 100%;
-    height: 32px;
-    position: absolute;
-}
-.arrow_thumb_vert.next {
-    bottom: 0;
-    background: url(../img/down.png) center center no-repeat;
-}
-.arrow_thumb_vert.prev {
-    top: 0;
-    background: url(../img/up.png) center center no-repeat;
 }
 
 .next {
